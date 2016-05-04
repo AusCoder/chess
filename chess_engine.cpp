@@ -1,19 +1,25 @@
 #include <iostream>
 #include <unordered_map>
+#include <string>
 
+#include "chess.h"
 
+using namespace std;
 
-int main()
-{
+int main() {
 
-    bool turn = true; //0 if white's turn; 1 if black's
+    bool white_turn = true; //0 if white's turn; 1 if black's
+    unordered_map<string, string> *board = new unordered_map<string, string>;
+
 	while(true){
 		// interpret user input;
 		// update hashmap;
 		// redraw GUI;	
-		turn = !turn; /*changes turns*/	
-	
+
+		white_turn = !white_turn; /*changes turns*/	
+        break;
 	}
 	// display winner	
-	return 0
+    delete board;
+	return 0;
 }
