@@ -1,10 +1,13 @@
+#include <iostream>
+#include <unordered_map>
 
-int state = 1; //1 if game is in play; 0 if checkmate or resignation occurs
-int turn = 0; //0 if white's turn; 1 if black's
+
 
 int main()
 {
-	while(state == 1){
+
+    bool turn = true; //0 if white's turn; 1 if black's
+	while(true){
 		// interpret user input;
 		// update hashmap;
 		// redraw GUI;	
