@@ -1,4 +1,5 @@
 #include <cmath>
+#include "chess.h"
 
 bool first_move;
 
@@ -14,52 +15,35 @@ bool abstract_legal(string start, string end, char piece) // e.g., input = ("e4"
 	bool end_in_range = (C1 >= 'a') && (C2 <= 'h') && (R1 >= '1') && (R2 <= '8'); // is valid ending point
 	
 
-	if !(start_in_range && end_in_range) // piece is starting from /ending at a place off the board
-		return false;
-
-	else if (piece == 'P'){ //pawn
-		if( R2 == (R1 + 1) && devC == 0)
-			return true;
-		else if (first_move && R2 == (R1 + 2) && devC == 0) //if first move, double jump allowed
-			return true;
-		else
-			return false;
-	}
-	
-	else if (piece == 'R'){ //rook
-		if (devR == 0 || devC == 0) //no deviation in either column or row
-			return true;
-		else
-			return false;
-	}
-	else if (piece == 'N'){ //knight
-		rdev
-		if ( (devR == 2 && devC == 1) || (devR == 1 && devC == 2))
-			return true;
-		else
-			return false;
-	}
+	if (start_in_range && end_in_range){ // piece is starting from /ending at a place off the board
 		
-	else if (piece == 'B'){ //bishop
-		if (devR == devC) //row deviation = column deviation
-			return true;
-		else
-			return false;
-	}
-	
-	else if (piece == 'Q'){// queen
-		if (devR == devC || devR == 0 || devC == 0) // rook or bishop conditions are satisfied
-			return true;
-		else
-			return false;
-	}
-	
-	else if (piece == 'K'){ //king
-		if ( devR <= 1 && devC <= 1) //ensures that 'to' is only one move away from 'from'
-			return true;
-		else
-			return false;
-	}	
+		if (piece == 'P'){ //pawn
+			if( R2 == (R1 + 1) && devC == 0.0)
+				return true;
+			else if (first_move && R2 == (R1 + 2) && devC == 0.0) //if first move, double jump allowed
+				return true;
+		} 
+		else if (piece == 'R'){ //rook
+			if (devR == 0.0 || devC == 0.0) //no deviation in either column or row
+				return true;
+		}
+		else if (piece == 'N'){ //knight
+			if ( (devR == 2.0 && devC == 1.0) || (devR == 1.0 && devC == 2.0))
+				return true;
+		}
 		
-
+		else if (piece == 'B'){ //bishop
+			if (devR == devC) //row deviation = column deviation
+				return true;
+		}
+		else if (piece == 'Q'){ // queen
+			if (devR == devC || devR == 0.0 || devC == 0.0) // rook or bishop conditions are satisfied
+				return true;
+		}
+		else if (piece == 'K'){ //king
+			if ( devR <= 1.0 && devC <= 1.0) //ensures that 'end' is only one move away from 'start'
+				return true;
+		}
+	}
+	return false;	
 }
