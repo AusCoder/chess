@@ -3,15 +3,15 @@
 # Makefile
 #
 
-CC  = clang++
-CXX = clang++
+CC  = g++
+CXX = g++
 CPP_DIR=
 
 # header file includes
 INCLUDES = 
 
 CFLAGS   = -std=c++14 -g -Wall $(INCLUDES)
-CXXFLAGS = -std=c++14 -g -Wall $(INCLUDES)
+CXXFLAGS = -std=c++1y -g -Wall $(INCLUDES)
 
 # linking options
 LDFLAGS = -g
