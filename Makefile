@@ -19,7 +19,7 @@ LDFLAGS = -g
 LDLIBS  =
 
 executables =  chess
-objects = chess_engine.o legal_move.o
+objects = chess_engine.o #legal_move.o
 
 .PHONY: default
 default: $(executables)

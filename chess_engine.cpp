@@ -53,13 +53,13 @@ void print_board(const unordered_map<string, string> *board) {
     string cols = "abcdefgh";
     string rows = "12345678";
 
-    for (int j = rows.size() ; j >= 0; j--) {
+    for (int j = rows.size()-1 ; j >= 0; j--) {
         for (int i = 0; i < cols.size(); i++) {
             string pos = string(1, cols[i]);
             pos += rows[j];
             auto got = board->find(pos);
-            if (got == board->end()) {}
-                //cout << "warning: key not found" << endl;
+            if (got == board->end())
+                cout << "warning: key not found" << endl;
             else {
                 string val = got->second;
                 if (val == "-") 
