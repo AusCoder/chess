@@ -3,7 +3,7 @@
 
 int main() {
 
-    bool white_turn = true; //0 if white's turn; 1 if black's
+    bool white_turn = true; //1 if white's turn; 0 if black's
     unordered_map<string, string> *board = new unordered_map<string, string>;
 
     init_board(board);

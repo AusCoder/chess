@@ -9,6 +9,8 @@
 using namespace std;
 
 // put function declarations here
+bool legal_move(string start, string end, char piece, char colour, unsorted_map< string, string > *board);
+
 void init_board( unordered_map<string, string> *board );
 void print_board(const unordered_map<string, string> *board);
 
@@ -17,6 +19,10 @@ string piece_at(const unordered_map<string, string> *board, string pos) {
     if (got == board->end())
         throw "key not found in unordered_map";
     return got->second;
+}
+
+bool occupied(const unordered_map<string, string> *board, string pos){
+	return (piece_at(board,pos) != "-");
 }
 
 #endif
