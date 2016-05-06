@@ -3,9 +3,11 @@
 
 int main() {
 
+    /* initialise the game board, the player statuses */
     bool white_turn = true; //1 if white's turn; 0 if black's
     unordered_map<string, string> *board = new unordered_map<string, string>;
-
+    struct PlayerStatus white_ps("a4");
+    struct PlayerStatus black_ps("h4");
     init_board(board);
 
 
@@ -14,17 +16,28 @@ int main() {
     //noecho();
     curs_set(0);
 
+    /* the game loop */
 	while(true){
         ncurses_print_board(board, white_turn);
-        string input = get_input();
+
+        string input; 
+        while (true) {
+            input = get_input();
+            if ( input == "q" || input == "quit" || input == "r" || input == "resign")
+                break;
+            break;
+        }
+
         if (input == "q" || input == "quit")
             break;
 		// interpret user input;
-		// update hashmap;
 		// redraw GUI;	
-
+        
+		// update hashmap;
+        //update_game_state("b1a3", board, &white_ps, &black_ps);
 		white_turn = !white_turn; /*changes turns*/	
 	}
+
     /* close ncurses */
     endwin();
 	// display winner	
@@ -32,7 +45,7 @@ int main() {
 	return 0;
 }
 
-
+/* initialise the board for the beginning of the game */
 void init_board( unordered_map<string, string> *board ) {
     string wpos = "a1WRb1WNc1WBd1WQe1WKf1WBg1WNh1WRa2WPb2WPc2WPd2WPe2WPf2WPg2WPh2WP";
     string bpos = "a8BRb8BNc8BBd8BQe8BKf8BBg8BNh8BRa7BPb7BPc7BPd7BPe7BPf7BPg7BPh7BP";
@@ -59,6 +72,7 @@ void init_board( unordered_map<string, string> *board ) {
     }
 }
 
+/* print the board to the terminal */
 void print_board(const unordered_map<string, string> *board) {
     string cols = "abcdefgh";
     string rows = "12345678";
@@ -82,6 +96,7 @@ void print_board(const unordered_map<string, string> *board) {
     }
 }
 
+/* print the board using ncurses */
 void ncurses_print_board(const unordered_map<string, string> *board, bool white_turn) {
     string cols = "abcdefgh";
     string rows = "12345678";
@@ -107,10 +122,11 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool white_
     if (white_turn)
         mvprintw(Y_TURN_POS,X_TURN_POS, "Turn: White");
     else
-        mvprintw(Y_TURN_POS,X_TURN_POS, "Turn: White");
+        mvprintw(Y_TURN_POS,X_TURN_POS, "Turn: Black");
 
     refresh();
 }
+
 /* print the user prompt */
 string get_input() {
     mvprintw(Y_INPUT_POS, X_INPUT_POS, "Enter a move: ");
@@ -121,4 +137,19 @@ string get_input() {
     }
     refresh();
     return ret;
+}
+
+/* update the current game state with a move */
+void update_game_state(string move, unordered_map<string, string> *board,
+        struct PlayerStatus *white_ps, struct PlayerStatus *black_ps) {
+    if (move.size() != 4) {
+        cerr << "warning: move instruction is not 4 characters long!" << endl;
+    }
+    string start = move.substr(0,2);
+    string end = move.substr(2,2);
+    //
+    // TODO: check if the move puts in check and update the PlayerStatus
+    //
+    (*board)[end] = (*board)[start];
+    (*board)[start] = "-";
 }

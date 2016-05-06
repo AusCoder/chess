@@ -24,15 +24,16 @@
 using namespace std;
 
 // put function declarations here
-bool is_legal_move(string start, string end, char piece, char colour, unsorted_map< string, string > *board);
-bool is_king_safe(string start, string end, char colour, unsorted_map< string, string > *board);
-bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, string > *board);
+bool is_legal_move(string start, string end, char piece, char colour, unordered_map< string, string > *board);
+bool is_king_safe(string start, string end, char colour, unordered_map< string, string > *board);
+bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< string, string > *board);
 
 void init_board( unordered_map<string, string> *board );
 void print_board(const unordered_map<string, string> *board);
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
 string get_input();
-
+void update_game_state(string move, unordered_map<string, string> *board,
+        struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
 
 string piece_at(const unordered_map<string, string> *board, string pos) {
     auto got = board->find(pos);
@@ -44,5 +45,19 @@ string piece_at(const unordered_map<string, string> *board, string pos) {
 bool occupied(const unordered_map<string, string> *board, string pos){
 	return (piece_at(board,pos) != "-");
 }
+
+struct PlayerStatus {
+    bool in_check;
+    string k_pos;
+    bool castle_k_side;
+    bool castle_q_side;
+
+    PlayerStatus(string k_pos) {
+        this->in_check = false;
+        this->k_pos = k_pos;
+        this->castle_k_side = true;
+        this->castle_q_side = true;
+    }
+};
 
 #endif
