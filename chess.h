@@ -7,19 +7,7 @@
 #include <string>
 #include <curses.h>
 #include <unistd.h>
-
-#define X_OFFSET 4
-#define Y_OFFSET 2
-#define X_CELL_SIZE 4
-#define Y_CELL_SIZE 1
-#define CELL_SPACING 1
-#define Y_TURN_SPACING 2
-#define Y_TURN_POS (Y_OFFSET + 8*Y_CELL_SIZE + 8*CELL_SPACING + Y_TURN_SPACING)
-#define X_TURN_POS 4
-#define Y_INPUT_SPACING 4
-#define Y_INPUT_POS (Y_OFFSET + 8*Y_CELL_SIZE + 8*CELL_SPACING + Y_TURN_SPACING + Y_INPUT_SPACING)
-#define X_INPUT_POS 4
-
+#include <vector>
 
 using namespace std;
 
@@ -28,21 +16,24 @@ bool is_legal_move(string start, string end, char piece, char colour, unordered_
 bool is_king_safe(string start, string end, char colour, unordered_map< string, string > *board);
 bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< string, string > *board);
 
+/* initialise the board */
 void init_board( unordered_map<string, string> *board );
+/* print board to termial */
 void print_board(const unordered_map<string, string> *board);
+/* print board with ncurses */
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
+/* get user input */
 string get_input();
+/* update the game state based on move */
 void update_game_state(string move, unordered_map<string, string> *board,
         struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
+/* convert position string to cartesian coordinates */
+vector<int> to_cart(string pos);
+/* get piece at position */
+string piece_at(const unordered_map<string, string> *board, string pos);
 
-string piece_at(const unordered_map<string, string> *board, string pos) {
-    auto got = board->find(pos);
-    if (got == board->end())
-        throw "key not found in unordered_map";
-    return got->second;
-}
 
-bool occupied(const unordered_map<string, string> *board, string pos){
+inline bool occupied(const unordered_map<string, string> *board, string pos){
 	return (piece_at(board,pos) != "-");
 }
 

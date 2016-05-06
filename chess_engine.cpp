@@ -42,6 +42,7 @@ int main() {
     endwin();
 	// display winner	
     delete board;
+
 	return 0;
 }
 
@@ -72,72 +73,7 @@ void init_board( unordered_map<string, string> *board ) {
     }
 }
 
-/* print the board to the terminal */
-void print_board(const unordered_map<string, string> *board) {
-    string cols = "abcdefgh";
-    string rows = "12345678";
 
-    for (int j = rows.size()-1 ; j >= 0; j--) {
-        for (int i = 0; i < cols.size(); i++) {
-            string pos = string(1, cols[i]);
-            pos += rows[j];
-            auto got = board->find(pos);
-            if (got == board->end())
-                cout << "warning: key not found" << endl;
-            else {
-                string val = got->second;
-                if (val == "-") 
-                    cout << " " << val << " ";
-                else
-                    cout << val << " " ;
-            }
-        }
-        cout << endl;
-    }
-}
-
-/* print the board using ncurses */
-void ncurses_print_board(const unordered_map<string, string> *board, bool white_turn) {
-    string cols = "abcdefgh";
-    string rows = "12345678";
-
-    /* start by clearing the previous board */
-    clear();
-    
-    /* print the board */
-    int x = X_OFFSET, y = Y_OFFSET;
-    for (int j = rows.size()-1 ; j >= 0; j--) {
-        for (int i = 0; i < cols.size(); i++) {
-            string pos = string(1, cols[i]);
-            pos += rows[j];
-            string val = piece_at(board, pos);
-            mvprintw(y,x,val.c_str());
-            x += X_CELL_SIZE + CELL_SPACING;
-        }
-        x = X_OFFSET;
-        y += Y_CELL_SIZE + CELL_SPACING;
-    }
-
-    /* print who's turn it is */
-    if (white_turn)
-        mvprintw(Y_TURN_POS,X_TURN_POS, "Turn: White");
-    else
-        mvprintw(Y_TURN_POS,X_TURN_POS, "Turn: Black");
-
-    refresh();
-}
-
-/* print the user prompt */
-string get_input() {
-    mvprintw(Y_INPUT_POS, X_INPUT_POS, "Enter a move: ");
-    char c;
-    string ret = "";
-    while ((c = getch()) != '\n') {
-        ret += c;
-    }
-    refresh();
-    return ret;
-}
 
 /* update the current game state with a move */
 void update_game_state(string move, unordered_map<string, string> *board,

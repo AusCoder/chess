@@ -19,7 +19,7 @@ LDFLAGS = -g
 LDLIBS  =  -lncurses
 
 executables =  chess
-objects = chess_engine.o #legal_move.o
+objects = chess_engine.o graphics.o util.o #legal_move.o
 
 .PHONY: default
 default: $(executables)
@@ -29,11 +29,11 @@ $(executables): $(objects)
 
 $(objects):
 
-test:
+unit_tests: util.o
 
 .PHONY: clean
 clean:
-	rm -f *~ a.out core $(objects) $(executables)
+	rm -f *~ a.out core $(objects) $(executables) test *.dSYM
 
 .PHONY: all
 all: clean default
