@@ -33,7 +33,7 @@ unit_tests: util.o
 
 .PHONY: clean
 clean:
-	rm -f *~ a.out core $(objects) $(executables) test *.dSYM
+	rm -f *~ a.out core $(objects) $(executables) unit_tests 
 
 .PHONY: all
 all: clean default

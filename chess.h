@@ -16,6 +16,7 @@ bool is_legal_move(string start, string end, char piece, char colour, unordered_
 bool is_king_safe(string start, string end, char colour, unordered_map< string, string > *board);
 bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< string, string > *board);
 
+
 /* initialise the board */
 void init_board( unordered_map<string, string> *board );
 /* print board to termial */
@@ -25,9 +26,10 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool);
 /* get user input */
 string get_input();
 /* update the game state based on move */
-void update_game_state(string move, unordered_map<string, string> *board,
+void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
         struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
-/* convert position string to cartesian coordinates */
+/* convert position string to cartesian coordinates  and vise versa*/
+string to_str(int x, int y);
 vector<int> to_cart(string pos);
 /* get piece at position */
 string piece_at(const unordered_map<string, string> *board, string pos);
