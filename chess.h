@@ -9,7 +9,9 @@
 using namespace std;
 
 // put function declarations here
-bool legal_move(string start, string end, char piece, char colour, unsorted_map< string, string > *board);
+bool is_legal_move(string start, string end, char piece, char colour, unsorted_map< string, string > *board);
+bool is_king_safe(string start, string end, char colour, unsorted_map< string, string > *board);
+bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, string > *board);
 
 void init_board( unordered_map<string, string> *board );
 void print_board(const unordered_map<string, string> *board);
