@@ -16,7 +16,7 @@ CXXFLAGS = -std=c++1y -g -Wall $(INCLUDES)
 # linking options
 LDFLAGS = -g
 # linking libraries
-LDLIBS  =
+LDLIBS  =  -lncurses
 
 executables =  chess
 objects = chess_engine.o #legal_move.o
@@ -25,7 +25,7 @@ objects = chess_engine.o #legal_move.o
 default: $(executables)
 
 $(executables): $(objects)
-	$(CXX) $(LDFLAGS) -o chess $(objects)
+	$(CXX) $(LDFLAGS) $(LDLIBS) -o chess $(objects)
 
 $(objects):
 
