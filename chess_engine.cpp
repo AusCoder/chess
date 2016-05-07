@@ -50,7 +50,7 @@ int main() {
 void init_board( unordered_map<string, string> *board ) {
     string wpos = "a1WRb1WNc1WBd1WQe1WKf1WBg1WNh1WRa2WPb2WPc2WPd2WPe2WPf2WPg2WPh2WP";
     string bpos = "a8BRb8BNc8BBd8BQe8BKf8BBg8BNh8BRa7BPb7BPc7BPd7BPe7BPf7BPg7BPh7BP";
-
+	int i;
     for(int i = 0; i < 16; i++) {
         string key = wpos.substr(4*i, 2);
         string val = wpos.substr(4*i+2, 2);

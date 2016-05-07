@@ -1,13 +1,12 @@
-#include <cmath>
 #include "chess.h"
 																	//ADD en passant routine
-/*.....................................................................................*/
-bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unsorted_map< string, string > *board)
+
+bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unordered_map< vector<int>, string > *board)
 {
 	int x1 = start[0], y1= start[1]; // 'start' coordinates
 	int x2 = end[0], y2 = end[1]; // 'end' coordinates
 	int devX = (x2 - x1 >= 0)? x2-x1: x1-x2; //absolute column deviation
-	int devX = (y2 - y1 >= 0)? y2-y1: y1-y2; //absolute row deviation
+	int devY = (y2 - y1 >= 0)? y2-y1: y1-y2; //absolute row deviation
 		
 	bool start_in_range = (x1 >= 1) && (x1 <= 8) && (y1 >= 1) && (y1 <= 8); // is valid starting point
 	bool end_in_range = (x2 >= 1) && (x2 <= 8) && (y2 >= 1) && (y2 <= 8); // is valid ending point
@@ -23,7 +22,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 			if( !occupied(board,end) && y2 == y1 + 1 && devX == 0) //standard jump
 				return true;
 			else if (y1 == 2 && y2 == 4 && devX == 0) //if first move, double jump allowed
-				intermediate ==  {x1, 3}; //intermediate position
+				intermediate =  {x1, 3}; //intermediate position
 				if (!occupied(board, end) && !occupied(board,intermediate))
 					return true;
 			else if (occupied(board,end) && y2 == y1 + 1  && devX == 1) //pawn makes a kill
@@ -54,43 +53,44 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 			if ( (devY == 2 && devX == 1) || (devY == 1 && devX == 2))
 				return true;
 		}
-		
 		else if (piece == 'B'){ //BISHOP
-			if (devR == devC) //absolute row deviation = absolute column deviation
+			if (devX == devY) //absolute row deviation = absolute column deviation
 				int ySign = (y2 - y1) > 0? 1: -1;
 				int xSign = (x2 - x1) > 0? 1: -1;
 				int k;
 				
-				for (k=1; k < devX; ++k);
+				for (k=1; k < devX; ++k){
 					intermediate = {x1 + xSign*k, y1 + ySign*k}; // kth intermediate space
-		}				if (occupied(board,intermediate))
+						if (occupied(board,intermediate))
 							return false;
+				}
 				return true;
-			
+		}			
 		else if (piece == 'Q'){ //QUEEN
 			if (devX == 0 || devY == 0) //behaves like rook, so retest as rook
 				return is_legal_move(start, end,'R', colour, *board);
-			else if (devR == devC) //behaves like bishop, so retest as bishop
+			else if (devX == devY) //behaves like bishop, so retest as bishop
 				return is_legal_move(start, end,'B', colour, *board);
 		}
 		else if (piece == 'K'){ //KING
-			if ( devR <= 1 && devC <= 1) //ensures that 'end' is only one move away from 'start'
+			if ( devX <= 1 && devY <= 1) //ensures that 'end' is only one move away from 'start'
 				return true;
 		}
 		else if (piece == 'T'){//TONY ABBOTT
 			return (start == end); //Tony Abbot is unable to move; he can only cede power.
 	}
 	return false;	
+	}
 }
 
 
 
 
-/*.....................................................................................*/
+
 
 // does the proposed move put player 'colour' in check?
 // **will run after is_legal_move, so proposed move will always be legal**
-bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map< string, string > *board, struct PlayerStatus player_ps) 
+bool is_king_safe(vector<int> start, vector<int> end, char colour, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps) 
 {
 	string king_pos = player_ps.k_pos; //king's position
 	char opponent = (colour=='W')? 'B':'W';
@@ -98,7 +98,7 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	if (piece_at(board, start) == string(1,colour) + string(1,'K')) //if king is to be moved, update king's position
 		king_pos = end; 
 
-	unordered_map<string,string> board2 = unordered_map<string,string>(*board); //make copy of board
+	unordered_map<vector<int>,string> board2 = unordered_map<vector<int>,string>(*board); //make copy of board
 	board2[end] = board2[start]; //make proposed move on copied board
 	board2[start] = "-";
 
@@ -157,7 +157,7 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	positions.push_back({king_x + 1, king_y - 2});
 	positions.push_back({king_x + 1, king_y + 2});
 
-	for (i = 0; i < 8; ++i)
+	for (i = 0; i < 8; ++i){
 			if (!((board -> find(positions[i])) == (board -> end()) )) {
 				piece = piece_at(board2,positions[i]);
 				if ((piece[0] == opponent) && (piece[1] == 'N'))
@@ -169,7 +169,7 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	//determine if enemy pawn is in striking distance
 	int sign = (colour == 'W')? 1 : -1 ;
 	positions.clear();
-	positions.push_back(king_x - 1, king_y + sign});
+	positions.push_back({king_x - 1, king_y + sign});
 	positions.push_back({king_x + 1, king_y + sign});
 
 	for (i=0; i < 2; ++i){
@@ -192,7 +192,7 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	positions.push_back({king_x, king_y+1});
 	positions.push_back({king_x+1, king_y+1});
 
-	for (i = 0; i < 8; ++i)
+	for (i = 0; i < 8; ++i){
 		if (!((board -> find(positions[i])) == (board -> end()) )) {
 			piece = piece_at(board2,positions[i]);
 			if ((piece[0] == opponent) && (piece[1] == 'K'))
@@ -203,7 +203,6 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	return true;
 }
 
-/*.....................................................................................*/
 
 
 
@@ -212,7 +211,8 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 
 
 
-bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, string > *board, struct PlayerStatus player_ps)
+
+bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps)
 {
 	
 	if (!(castle_unmoved))
@@ -224,7 +224,7 @@ bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, s
 	
 	if (i == 1){ //queen-side castling
 		vector<int> queen_spot {4, row}; 
-		if (occupied(board, queen_spot)
+		if (occupied(board, queen_spot))
 			return false;
 
 		rook_start = {1,row};
@@ -240,8 +240,8 @@ bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, s
 	}
 		
 	if (!occupied(board,king_end) && !occupied(board,rook_end)){
-		unordered_map<string,string> board2 = unordered_map<string,string>(*board); //make copy of board
-		board2[rook_start] = "-"
+		unordered_map<vector<int>,string> board2 = unordered_map<string,string>(*board); //make copy of board
+		board2[rook_start] = "-";
 		board2[rook_end] = string(1,colour) + string(1,'R');
 		if (is_king_safe(king_start, king_end, colour, board2, player_ps))
 			return true; 		
