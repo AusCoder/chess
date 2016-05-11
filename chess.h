@@ -14,7 +14,7 @@ using namespace std;
 // put function declarations here
 bool is_legal_move(vector<int> start, vector<int> end, char colour, unordered_map< vector<int>, string > *board);
 bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_pos);
-bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps);
+int can_castle(int i, unordered_map< vector<int>, string > *board);
 
 /* initialise the board */
 void init_board( unordered_map< vector<int> , string> *board );

@@ -33,67 +33,87 @@ int main() {
         
         while (true) {
 			input = get_input();
+			char player = white_turn? 'W':'B';
+			struct PlayerStatus player_ps = white_turn? white_ps: black_ps;
+			struct PlayerStatus opponent_ps = white_turn? black_ps: white_ps;
+			
 			if ( input == "q" || input == "quit" || input == "r" || input == "resign")
 				break;
 			
-			if (input != "0-0" && input != "0-0-0" && input.length() != 5)
+			else if (input != "0-0" && input != "0-0-0" && input.length() != 5){
+				//output error message?
 				continue;
-			
-			char player = white_turn? 'W':'B';
-			struct PlayerStatus player_ps = white_turn? white_ps:black_ps;
-			
-			
-			else if (input == "0-0")
-				; //routine
-				continue;
-			else if (input == "0-0-0")
-				; //routine
-				continue;
-			// start, end converted from input...
-			
-			if (!is_legal_move(start, end, player, board))
-				continue;
-			
-			if (!is_king_safe(board, player_ps.k_pos)) //was player put in check from previous move?
-				player_ps.in_check = true;
-			
-			if (player_ps.in_check)
-				unordered_map<vector<int>,string> board2 = unordered_map<vector<int>,string>(*board); //make copy of board
-				vector<int> king_position = player_ps.k_pos;
+			}			
 						
-				board2[end] = board2[start]; //make proposed move on copied board
-				board2[start] = "-";
-						
-				if (board2[end][1] == 'K')
-					player_ps.k_pos = end; //update king's position
-					
-				if (!is_king_safe(board2, king_position)) 
-					player_ps.k_pos = king_position;
-					continue; //maybe include error message
-				else
-					player_ps.in_check = false;
+			else if (input == "0-0" || input == "0-0-0"){
+				int i = (input == "0-0")? 1 : 2; 
+				int castle_success = can_castle(i, board);
 				
+				if (castle_success == 0)
+					continue; //output error message?
+				}
+			
+			
+			else {
+				// start, end to be converted from input...
+				
+				if (!is_legal_move(start, end, player, board))
+					//output error message?
+					continue;
+				
+				if (player_ps.in_check){
+					unordered_map<vector<int>,string> board2 = unordered_map<vector<int>,string>(*board); //make copy of board
+					vector<int> king_position = player_ps.k_pos;
+							
+					board2[end] = board2[start]; //make proposed move on copied board
+					board2[start] = "-";
+							
+					if (board2[end][1] == 'K')
+						player_ps.k_pos = end; //update king's position
+						
+					if (!is_king_safe(board2, king_position)){ 
+						player_ps.k_pos = king_position;
+						continue; //maybe include error message
+					}
+					else
+						player_ps.in_check = false;
+				}
+					
 
-			if (board[end][1] == 'K')
-				player_ps.k_pos = end; //update king's position
-				player_ps.castle_k_side = false;
-				player_ps.castle_q_side = false;
-			
-			else if (board[end][1] == 'R')
-				// cases: update player_ps.castle_k_side, player_ps.castle_q_side
-			
-			board[end] = board[start]; //update board
-			board[start] = "-";
-			
+				if (board[start][1] == 'K'){
+					player_ps.k_pos = end; //update king's position
+					player_ps.castle_k_side = false;
+					player_ps.castle_q_side = false;
+				}
+				
+				else if (board[start][1] == 'R'){
+					vector<int> k_rook_start, q_rook_start;
+					int row = white_turn? 1:8;
+					k_rook_start.push_back(1);
+					k_rook_start.push_back(row);
+					q_rook_start.push_back(8);
+					q_rook_start.push_back(row);
+					
+					if (start == k_rook_start)
+						player_ps.castle_k_side = false;
+					else if (start == q_rook_start)
+						player_ps.castle_k_side = false;
+				}
+				
+				board[end] = board[start]; //update board
+				board[start] = "-";
+			}
 
 			white_turn = !white_turn; //changes turn
+			
+			if (!is_king_safe(board, opponent_ps.k_pos)) //was opponent put in check?
+				opponent_ps.in_check = true;
 	}
 
 
         if (input == "q" || input == "quit")
             break;
 		
-		white_turn = !white_turn; /*changes turns*/	
 	}
 
     /* close ncurses */

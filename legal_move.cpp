@@ -254,42 +254,62 @@ bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_
 
 
 
-bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps)
+int can_castle(int i, unordered_map< vector<int>, string > *board) //if can successfully castle, does so and updates board and returns 1; returns 0 otherwise
 {
-	
-	if (!(castle_unmoved))
-		return false;
-
+	struct PlayerStatus player_ps = white_turn? white_ps: black_ps
 	vector<int> king_start, king_end, rook_start, rook_end;
-	int row = (colour == 'W')?1:8;
-	king_start = {5,row};	
 	
-	if (i == 1){ //queen-side castling
-		vector<int> queen_spot {4, row}; 
-		if (occupied(board, queen_spot))
-			return false;
-
-		rook_start = {1,row};
-		king_end = {3,row};
-		rook_end = {4,row};
-			
-	}	
+	int row = white_turn? 1:8;
 	
-	else if (i == 2){ //king-side castling
-		rook_start = {8,row};
-		king_end = {7, row};
-		rook_end = {6,row};
+	king_start.push_back(5);
+	king_start.push_back(row);
+	
+	
+	if (i == 1){ //king-side castling
+		if (!player_ps.castle_k_side)
+			return 0;
+		rook_start.push_back(8);
+		rook_start.push_back(row);
+		king_end.push_back(7);
+		king_end.push_back(row);
+		rook_end.push_back(6);
+		rook_end.push_back(row);
 	}
-		
+	
+	
+	else if (i == 2){ //queen-side castling
+		vector<int> queen_spot {4, row}; 
+		if (!player_ps.castle_q_side || occupied(board, queen_spot))
+			return 0;
+
+		rook_start.push_back(1);
+		rook_start.push_back(row);
+		king_end.push_back(3);
+		king_end.push_back(row);
+		rook_end.push_back(4);
+		rook_end.push_back(row);
+	}
+			
 	if (!occupied(board,king_end) && !occupied(board,rook_end)){
 		unordered_map<vector<int>,string> board2 = unordered_map<string,string>(*board); //make copy of board
 		board2[rook_start] = "-";
-		board2[rook_end] = string(1,colour) + string(1,'R');
-		if (is_king_safe(king_start, king_end, colour, board2, player_ps))
-			return true; 		
+		board2[rook_end] = white_turn? "WR": "BR";
+		board2[king_start] = "-";
+		board2[king_end] = white_turn? "WK": "BK";
+		
+		if (is_king_safe(board2, king_end)){
+			board[rook_start] = "-";
+			board[rook_end] = white_turn? "WR": "BR";
+			board[king_start] = "-";
+			board[king_end] = white_turn? "WK": "BK";
+			
+			player_ps.k_pos = king_end;
+			player_ps.castle_k_side = false;
+			player_ps.castle_q_side = false;
+			return 1;
+		} 		
 	}
-	else
-		return false;
+	return 0;
 }
 
 
