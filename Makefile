@@ -29,7 +29,7 @@ $(executables): $(objects)
 
 $(objects):
 
-unit_tests: util.o
+unit_tests: util.o graphics.o
 
 .PHONY: clean
 clean:

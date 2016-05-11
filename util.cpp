@@ -2,6 +2,7 @@
 
 /* convert string position representation to cartesian coordinates */
 vector<int> to_cart(string pos) {
+    assert(pos[0] >= 'a' && pos[0] <= 'h' && pos[0] >= '1' && pos[1] <= '8');
     string cols = "abcdefgh";
     string rows = "12345678";
     vector<int> ret;
@@ -18,6 +19,7 @@ vector<int> to_cart(string pos) {
 
 /* convert cartesian representation to position string */
 string to_str(int x, int y) {
+    assert(x>=1 && x<=8 && y >=1 && y <=8);
     string cols = "abcdefgh";
     string rows = "12345678";
     string ret = "";
@@ -51,13 +53,132 @@ bool king_in_check(const unordered_map<string, string> *board, string king_pos) 
     vector<int> kcarts = to_cart(king_pos);
     char colour = piece_at(board, king_pos)[0];
 
-    /* do horizontal checks */
-    for (int x = kcarts[0]+1, y = kcarts[1]; x <= 8; x++) 
+    if (piece_at(board, king_pos)[1] != 'K') {
+        cerr << "warning: king not at that position" << endl;
+    }
+
+    /* 
+     * do horizontal checks 
+     */
+    for (int x = kcarts[0]+1, y = kcarts[1]; x <= 8; x++) {
         string piece;
-        if ((piece = piece_at(board,to_str(x,y))) == "-") // pieve
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
             continue;
-        if (piece[0] == colour) // piece is friendly
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'R' || piece[1] == 'Q' ) // piece is rook or queen
+            return true;
+        else  // it is some other piece that cannot attack horizontally or vertically
             break;
     }
-    return true;
+    for (int x = kcarts[0]-1, y = kcarts[1]; x >= 1; x--) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'R' || piece[1] == 'Q' ) // piece is rook or queen
+            return true;
+        else  // it is some other piece that cannot attack horizontally or vertically
+            break;
+    }
+    /* 
+     * do vertical checks 
+     */
+    for (int x = kcarts[0], y = kcarts[1]+1; y <= 8; y++) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-") continue;
+        else if (piece[0] == colour) // piece is friendly 
+            break;
+        else if (piece[1] == 'R' || piece[1] == 'Q' ){ // piece is rook or queen
+            return true;
+        }
+        else  // it is some other piece that cannot attack horizontally or vertically
+            break;
+    }
+    for (int x = kcarts[0], y = kcarts[1]-1; y >= 1; y--) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'R' || piece[1] == 'Q' ) // piece is rook or queen
+            return true;
+        else  // it is some other piece that cannot attack horizontally or vertically
+            break;
+    }
+    /*
+     * do diagonal checks
+     */
+    for (int x = kcarts[0]+1, y = kcarts[1]+1; x<=8 && y<=8; x++, y++) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'B' || piece[1] == 'Q' )// piece bishop or queen
+            return true;
+        else  // it is some other piece that cannot attack diagonally
+            break;
+    }
+    for (int x = kcarts[0]-1, y = kcarts[1]-1; x>=1 && y>=1; x--, y--) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'B' || piece[1] == 'Q' )// piece bishop or queen
+            return true;
+        else  // it is some other piece that cannot diagonally
+            break;
+    }
+    for (int x = kcarts[0]+1, y = kcarts[1]-1; x<=8 && y>=1; x++, y--) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'B' || piece[1] == 'Q' )// piece bishop or queen
+            return true;
+        else  // it is some other piece that cannot attack diagonally
+            break;
+    }
+    for (int x = kcarts[0]-1, y = kcarts[1]+1; x>=1 && y<=8; x--, y++) {
+        string piece;
+        if ((piece = piece_at(board,to_str(x,y))) == "-")
+            continue;
+        else if (piece[0] == colour) // piece is friendly
+            break;
+        else if (piece[1] == 'B' || piece[1] == 'Q' )// piece bishop or queen
+            return true;
+        else  // it is some other piece that cannot diagonally
+            break;
+    }
+    /*
+     * do knight check
+     */
+    string piece;
+    int x,y;
+    for (int i = 1; i <= 2; i++) {
+        for (int j = 1; j <=2; j++) {
+            if ((x = kcarts[0]+ pow(-1,i)*2) <=8 && (y = kcarts[1] + pow(-1,j)*1) <=8) {
+                piece = piece_at(board, to_str(x,y));
+                if (piece[1] == 'N' && piece[0] != colour) {
+                    return true;
+                }
+            }
+        }
+    }
+    for (int i = 1; i <= 2; i++) {
+        for (int j = 1; j <=2; j++) {
+            if ((x = kcarts[0]+ pow(-1,i)*1) <=8 && (y = kcarts[1] + pow(-1,j)*2) <=8) {
+                piece = piece_at(board, to_str(x,y));
+                if (piece[1] == 'N' && piece[0] != colour) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }

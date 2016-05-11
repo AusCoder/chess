@@ -81,3 +81,12 @@ string get_input() {
     refresh();
     return ret;
 }
+
+/* print bool */
+void print_bool(bool x) {
+    if (x)
+        mvprintw(Y_TURN_POS -2, X_TURN_POS, "King in check: True");
+    else
+        mvprintw(Y_TURN_POS -2, X_TURN_POS, "King in check: False");
+    refresh();
+}

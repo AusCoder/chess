@@ -8,13 +8,14 @@
 #include <curses.h>
 #include <unistd.h>
 #include <vector>
+#include <cassert>
 
 using namespace std;
 
 // put function declarations here
-bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unsorted_map< string, string > *board);
-bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map< string, string > *board, struct PlayerStatus player_ps);
-bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, string > *board, struct PlayerStatus player_ps);
+bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unordered_map< string, string > *board);
+bool is_king_safe(vector<int> start, vector<int> end, char colour, unordered_map< string, string > *board, struct PlayerStatus player_ps);
+bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< string, string > *board, struct PlayerStatus player_ps);
 
 
 /* initialise the board */
@@ -25,6 +26,7 @@ void print_board(const unordered_map<string, string> *board);
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
 /* get user input */
 string get_input();
+void print_bool(bool x);
 /* update the game state based on move */
 void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
         struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
