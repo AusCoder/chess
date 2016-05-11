@@ -12,8 +12,8 @@
 using namespace std;
 
 // put function declarations here
-bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unordered_map< vector<int>, string > *board);
-bool is_king_safe(vector<int> start, vector<int> end, char colour, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps);
+bool is_legal_move(vector<int> start, vector<int> end, char colour, unordered_map< vector<int>, string > *board);
+bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_pos);
 bool can_castle(char colour, int i, bool castle_unmoved, unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps);
 
 /* initialise the board */
@@ -40,11 +40,11 @@ inline bool occupied(const unordered_map<vector<int>, string> *board, string pos
 
 struct PlayerStatus {
     bool in_check;
-    string k_pos;
+    vector<int> k_pos;
     bool castle_k_side;
     bool castle_q_side;
 
-    PlayerStatus(string k_pos) {
+    PlayerStatus(vector<int> k_pos) {
         this->in_check = false;
         this->k_pos = k_pos;
         this->castle_k_side = true;
