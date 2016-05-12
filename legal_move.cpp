@@ -163,6 +163,7 @@ bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_
 	vector<int> positions;
 	
 	//determine if enemy knight is in striking distance
+	vector<int> N_positions
 	positions.push_back(king_x - 2);
 	positions.push_back(king_y - 1);
 	positions.push_back(king_x - 2);
@@ -214,26 +215,13 @@ bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_
 	
 
 	//determine if enemy king is in striking distance
-	positions.push_back(king_x-1);
-	positions.push_back(king_y-1);	
-	positions.push_back(king_x);
-	positions.push_back(king_y-1);
-	positions.push_back(king_x+1);
-	positions.push_back(king_y-1);
-	positions.push_back(king_x-1);
-	positions.push_back(king_y);
-	positions.push_back(king_x+1);
-	positions.push_back(king_y);
-	positions.push_back(king_x-1);
-	positions.push_back(king_y+1);	
-	positions.push_back(king_x);
-	positions.push_back(king_y+1);
-	positions.push_back(king_x+1)
-	positions.push_back(king_y+1);
+	vector<int> K_positions {king_x-1,king_y-1,king_x,king_y-1,king_x+1,
+		king_y-1,king_x-1,king_y,king_x+1,king_y,king_x-1,king_y+1,king_x,
+		king_y+1,king_x+1,king_y+1};
 
 	for (i = 0; i < 16; i = i + 2){
-		position.push_back(positions[i]);
-		position.push_back(positions[i+1]);
+		position.push_back(K_positions[i]);
+		position.push_back(K_positions[i+1]);
 		if (!((board -> find(position)) == (board -> end()) )) {
 			piece = piece_at(board,position);
 			if ((piece[0] == opponent) && (piece[1] == 'K'))
@@ -253,63 +241,46 @@ bool is_king_safe(unordered_map< vector<int>, string > *board, vector<int> king_
 
 
 
-
-int can_castle(int i, unordered_map< vector<int>, string > *board) //if can successfully castle, does so and updates board and returns 1; returns 0 otherwise
+bool can_castle(string input, unordered_map< vector<int>, string > *board)
+//if can successfully castle, updates board and returns true; returns false otherwise
 {
 	struct PlayerStatus player_ps = white_turn? white_ps: black_ps
-	vector<int> king_start, king_end, rook_start, rook_end;
-	
 	int row = white_turn? 1:8;
-	
-	king_start.push_back(5);
-	king_start.push_back(row);
-	
-	
-	if (i == 1){ //king-side castling
+	vector<int> king_start {5,row};
+			
+	if (input == "0-0"){ //king-side castling
 		if (!player_ps.castle_k_side)
-			return 0;
-		rook_start.push_back(8);
-		rook_start.push_back(row);
-		king_end.push_back(7);
-		king_end.push_back(row);
-		rook_end.push_back(6);
-		rook_end.push_back(row);
+			return false;
+		vector<int> rook_start {8,row};
+		vector<int> rook_end {6,row};
+		vector<int> king_end {7,row};
 	}
 	
-	
-	else if (i == 2){ //queen-side castling
+	else if (input == "0-0-0"){ //queen-side castling
 		vector<int> queen_spot {4, row}; 
 		if (!player_ps.castle_q_side || occupied(board, queen_spot))
-			return 0;
-
-		rook_start.push_back(1);
-		rook_start.push_back(row);
-		king_end.push_back(3);
-		king_end.push_back(row);
-		rook_end.push_back(4);
-		rook_end.push_back(row);
-	}
-			
+			return false;
+		
+		vector<int> rook_start {1,row};
+		vector<int> rook_end {4,row};
+		vector<int> king_end {3,row};
+					
 	if (!occupied(board,king_end) && !occupied(board,rook_end)){
 		unordered_map<vector<int>,string> board2 = unordered_map<string,string>(*board); //make copy of board
-		board2[rook_start] = "-";
-		board2[rook_end] = white_turn? "WR": "BR";
-		board2[king_start] = "-";
-		board2[king_end] = white_turn? "WK": "BK";
+		update_board(rook_start, rook_end, board2);
+		update_board(king_start, king_end, board2);
 		
 		if (is_king_safe(board2, king_end)){
-			board[rook_start] = "-";
-			board[rook_end] = white_turn? "WR": "BR";
-			board[king_start] = "-";
-			board[king_end] = white_turn? "WK": "BK";
+			update_board(rook_start, rook_end, board);
+			update_board(king_start, king_end, board);
 			
 			player_ps.k_pos = king_end;
 			player_ps.castle_k_side = false;
 			player_ps.castle_q_side = false;
-			return 1;
+			return true;
 		} 		
 	}
-	return 0;
+	return false;
 }
 
 

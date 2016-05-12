@@ -46,9 +46,9 @@ int main() {
 						
 			else if (input == "0-0" || input == "0-0-0"){
 				int i = (input == "0-0")? 1 : 2; 
-				int castle_success = can_castle(i, board);
+				bool castle_success = can_castle(i, board);
 				
-				if (castle_success == 0) //if castling failed
+				if (castle_success == false) //if castling failed
 					continue; //output error message?
 				}
 			
