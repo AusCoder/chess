@@ -21,6 +21,8 @@ int main() {
         ncurses_print_board(board, white_turn);
 
         string input; 
+	
+	/* loop to get a valid input move */
         while (true) {
             input = get_input();
             if ( input == "q" || input == "quit" || input == "r" || input == "resign")
@@ -34,7 +36,7 @@ int main() {
 		// redraw GUI;	
         
 		// update hashmap;
-        update_game_state(input, white_turn, board, &white_ps, &black_ps);
+        //update_game_state(input, white_turn, board, &white_ps, &black_ps);
 		white_turn = !white_turn; /*changes turns*/	
 	}
 

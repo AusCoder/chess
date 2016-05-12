@@ -1,4 +1,5 @@
 #include "chess.h"
+#include <cmath>
 
 /* convert string position representation to cartesian coordinates */
 vector<int> to_cart(string pos) {
