@@ -33,6 +33,7 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
 /* convert position string to cartesian coordinates  and vise versa*/
 string to_str(int x, int y);
 vector<int> to_cart(string pos);
+void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board);
 /* get piece at position */
 string piece_at(const unordered_map<string, string> *board, string pos);
 /* a king in check function */
