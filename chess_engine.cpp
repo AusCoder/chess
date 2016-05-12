@@ -34,7 +34,7 @@ int main() {
 		// redraw GUI;	
         
 		// update hashmap;
-        //update_game_state("b1a3", white_turn, board, &white_ps, &black_ps);
+        update_game_state(input, white_turn, board, &white_ps, &black_ps);
 		white_turn = !white_turn; /*changes turns*/	
 	}
 
@@ -88,6 +88,7 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
     string start = move.substr(0,2);
     string end = move.substr(2,2);
 
+
     //
     // TODO: check if the move puts in check and check if move prevents further castling
     //
@@ -98,4 +99,7 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
     }
     (*board)[end] = (*board)[start];
     (*board)[start] = "-";
+    if ( king_in_check(board, opposition->k_pos) ) {
+        opposition->in_check = true;
+    }
 }

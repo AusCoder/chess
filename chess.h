@@ -35,6 +35,8 @@ string to_str(int x, int y);
 vector<int> to_cart(string pos);
 /* get piece at position */
 string piece_at(const unordered_map<string, string> *board, string pos);
+/* a king in check function */
+bool king_in_check(const unordered_map<string, string> *board, string king_pos);
 
 
 inline bool occupied(const unordered_map<string, string> *board, string pos){
