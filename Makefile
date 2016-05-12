@@ -25,7 +25,7 @@ objects = chess_engine.o graphics.o util.o #legal_move.o
 default: $(executables)
 
 $(executables): $(objects)
-	$(CXX) $(LDFLAGS) $(LDLIBS) -o chess $(objects)
+	$(CXX) $(LDFLAGS)  -o chess $(objects) $(LDLIBS)
 
 $(objects):
 
