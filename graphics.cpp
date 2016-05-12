@@ -11,6 +11,8 @@
 #define Y_INPUT_SPACING 4
 #define Y_INPUT_POS (Y_OFFSET + 8*Y_CELL_SIZE + 8*CELL_SPACING + Y_TURN_SPACING + Y_INPUT_SPACING)
 #define X_INPUT_POS 4
+#define Y_ERROR_POS (Y_INPUT_POS - 1)
+#define X_ERROR_POS 4
 
 
 
@@ -72,7 +74,10 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool white_
 
 /* print the user prompt */
 string get_input() {
-    mvprintw(Y_INPUT_POS, X_INPUT_POS, "Enter a move: ");
+    string prompt = "Enter a move: ";
+    string overwrite_prompt = prompt + "                                            ";
+    mvprintw(Y_INPUT_POS, X_INPUT_POS, overwrite_prompt.c_str());
+    move(Y_INPUT_POS, X_INPUT_POS + prompt.length());
     char c;
     string ret = "";
     while ((c = getch()) != '\n') {
@@ -88,5 +93,13 @@ void print_bool(bool x) {
         mvprintw(Y_TURN_POS -2, X_TURN_POS, "King in check: True");
     else
         mvprintw(Y_TURN_POS -2, X_TURN_POS, "King in check: False");
+    refresh();
+}
+
+/* print bad input error */
+void print_error_bad_input(string input) {
+    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad input:                                   ");
+    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad input: ");
+    printw(input.c_str());
     refresh();
 }
