@@ -35,8 +35,7 @@ int main() {
 			input = get_input();
 			char player = white_turn? 'W':'B';
 			struct PlayerStatus player_ps = white_turn? white_ps: black_ps;
-			struct PlayerStatus opponent_ps = white_turn? black_ps: white_ps;
-			
+						
 			if ( input == "q" || input == "quit" || input == "r" || input == "resign")
 				break;
 			
@@ -49,14 +48,19 @@ int main() {
 				int i = (input == "0-0")? 1 : 2; 
 				int castle_success = can_castle(i, board);
 				
-				if (castle_success == 0)
+				if (castle_success == 0) //if castling failed
 					continue; //output error message?
 				}
 			
 			
 			else {
-				// start, end to be converted from input...
-				
+				int x1 = input[0] - 'a' + 1;
+				int y1 = input[1] - '1' + 1;
+				int x2 = input[2] - 'a' + 1;
+				int y2 = input[3] - '1' + 1;
+				vector<int> start {x1,y1};
+				vector<int> end {x2,y2};
+								
 				if (!is_legal_move(start, end, player, board))
 					//output error message?
 					continue;
@@ -105,6 +109,8 @@ int main() {
 			}
 
 			white_turn = !white_turn; //changes turn
+			
+			struct PlayerStatus opponent_ps = white_turn? black_ps: white_ps;
 			
 			if (!is_king_safe(board, opponent_ps.k_pos)) //was opponent put in check?
 				opponent_ps.in_check = true;
