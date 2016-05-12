@@ -77,32 +77,32 @@ void init_board( unordered_map<string, string> *board ) {
 
 
 
-// update the current game state with a move 
-void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
-        struct PlayerStatus *white_ps, struct PlayerStatus *black_ps) {
-    if (move.size() != 4) {
-        cerr << "warning: move instruction is not 4 characters long!" << endl;
-    }
-    // if it is whites turn, then white is player and back is opposition etc
-    struct PlayerStatus *player = white_turn ? white_ps : black_ps;
-    struct PlayerStatus *opposition = white_turn ? black_ps : white_ps;
+//~ // update the current game state with a move 
+//~ void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
+        //~ struct PlayerStatus *white_ps, struct PlayerStatus *black_ps) {
+    //~ if (move.size() != 4) {
+        //~ cerr << "warning: move instruction is not 4 characters long!" << endl;
+    //~ }
+    //~ // if it is whites turn, then white is player and back is opposition etc
+    //~ struct PlayerStatus *player = white_turn ? white_ps : black_ps;
+    //~ struct PlayerStatus *opposition = white_turn ? black_ps : white_ps;
 
-    string start = move.substr(0,2);
-    string end = move.substr(2,2);
+    //~ string start = move.substr(0,2);
+    //~ string end = move.substr(2,2);
 
 
-    //
-    // TODO: check if the move puts in check and check if move prevents further castling
-    //
+    //~ //
+    //~ // TODO: check if the move puts in check and check if move prevents further castling
+    //~ //
 
-    // check if the piece moved is a king 
-    if ( piece_at(board, start)[1] == 'K' ) {
-        player->k_pos = end;
-    }
-    (*board)[end] = (*board)[start];
-    (*board)[start] = "-";
-    if ( king_in_check(board, opposition->k_pos) ) {
-        opposition->in_check = true;
-    }
-}
+    //~ // check if the piece moved is a king 
+    //~ if ( piece_at(board, start)[1] == 'K' ) {
+        //~ player->k_pos = end;
+    //~ }
+    //~ (*board)[end] = (*board)[start];
+    //~ (*board)[start] = "-";
+    //~ if ( king_in_check(board, opposition->k_pos) ) {
+        //~ opposition->in_check = true;
+    //~ }
+//~ }
 

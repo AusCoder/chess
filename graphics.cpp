@@ -53,7 +53,7 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool white_
         for (int i = 0; i < cols.size(); i++) {
             string pos = string(1, cols[i]);
             pos += rows[j];
-            string val = piece_at(board, pos);
+            string val = piece_at(board, to_cart(pos));
             mvprintw(y,x,val.c_str());
             x += X_CELL_SIZE + CELL_SPACING;
         }
