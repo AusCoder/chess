@@ -5,7 +5,7 @@ int main() {
 
     /* initialise the game board, the player statuses */
     bool white_turn = true; //1 if white's turn; 0 if black's
-    unordered_map<string, string> *board = new unordered_map<string, string>;
+    unordered_map<string, string> *board = new unordered_map<string, string>();
     struct PlayerStatus white_ps("a4");
     struct PlayerStatus black_ps("h4");
     init_board(board);
@@ -77,13 +77,13 @@ void init_board( unordered_map<string, string> *board ) {
 
 
 
-/* update the current game state with a move */
+// update the current game state with a move 
 void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
         struct PlayerStatus *white_ps, struct PlayerStatus *black_ps) {
     if (move.size() != 4) {
         cerr << "warning: move instruction is not 4 characters long!" << endl;
     }
-    /* if it is whites turn, then white is player and back is opposition etc */
+    // if it is whites turn, then white is player and back is opposition etc
     struct PlayerStatus *player = white_turn ? white_ps : black_ps;
     struct PlayerStatus *opposition = white_turn ? black_ps : white_ps;
 
@@ -95,7 +95,7 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
     // TODO: check if the move puts in check and check if move prevents further castling
     //
 
-    /* check if the piece moved is a king */
+    // check if the piece moved is a king 
     if ( piece_at(board, start)[1] == 'K' ) {
         player->k_pos = end;
     }
@@ -105,3 +105,4 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
         opposition->in_check = true;
     }
 }
+

@@ -1,7 +1,7 @@
 #include <cmath>
 #include "chess.h"
 																	//ADD en passant routine
-/*.....................................................................................*/
+/*.....................................................................................
 bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unsorted_map< string, string > *board)
 {
 	int x1 = start[0], y1= start[1]; // 'start' coordinates
@@ -86,10 +86,11 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 
 
 
-/*.....................................................................................*/
+.....................................................................................*/
 
 // does the proposed move put player 'colour' in check?
 // **will run after is_legal_move, so proposed move will always be legal**
+/*
 bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map< string, string > *board, struct PlayerStatus player_ps) 
 {
 	string king_pos = player_ps.k_pos; //king's position
@@ -203,7 +204,7 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 	return true;
 }
 
-/*.....................................................................................*/
+.....................................................................................*/
 
 
 
@@ -212,42 +213,47 @@ bool is_king_safe(vector<int> start, vector<int> end, char colour, unsorted_map<
 
 
 
-bool can_castle(char colour, int i, bool castle_unmoved, unsorted_map< string, string > *board, struct PlayerStatus player_ps)
+bool can_castle(string input, unordered_map< vector<int>, string > *board)
+//if can successfully castle, updates board and returns true; returns false otherwise
 {
-	
-	if (!(castle_unmoved))
-		return false;
-
-	vector<int> king_start, king_end, rook_start, rook_end;
-	int row = (colour == 'W')?1:8;
-	king_start = {5,row};	
-	
-	if (i == 1){ //queen-side castling
-		vector<int> queen_spot {4, row}; 
-		if (occupied(board, queen_spot)
-			return false;
-
-		rook_start = {1,row};
-		king_end = {3,row};
-		rook_end = {4,row};
+	struct PlayerStatus player_ps = white_turn? white_ps: black_ps
+	int row = white_turn? 1:8;
+	vector<int> king_start {5,row};
 			
-	}	
-	
-	else if (i == 2){ //king-side castling
-		rook_start = {8,row};
-		king_end = {7, row};
-		rook_end = {6,row};
+	if (input == "0-0"){ //king-side castling
+		if (!player_ps.castle_k_side)
+			return false;
+		vector<int> rook_start {8,row};
+		vector<int> rook_end {6,row};
+		vector<int> king_end {7,row};
 	}
+	
+	else if (input == "0-0-0"){ //queen-side castling
+		vector<int> queen_spot {4, row}; 
+		if (!player_ps.castle_q_side || occupied(board, queen_spot))
+			return false;
 		
+		vector<int> rook_start {1,row};
+		vector<int> rook_end {4,row};
+		vector<int> king_end {3,row};
+	}
+					
 	if (!occupied(board,king_end) && !occupied(board,rook_end)){
 		unordered_map<string,string> board2 = unordered_map<string,string>(*board); //make copy of board
-		board2[rook_start] = "-"
-		board2[rook_end] = string(1,colour) + string(1,'R');
-		if (is_king_safe(king_start, king_end, colour, board2, player_ps))
-			return true; 		
+		update_board(rook_start, rook_end, board2);
+		update_board(king_start, king_end, board2);
+		
+		if (is_king_safe(board2, king_end)){
+			update_board(rook_start, rook_end, board);
+			update_board(king_start, king_end, board);
+			
+			player_ps.k_pos = (king_end.to_str());
+			player_ps.castle_k_side = false;
+			player_ps.castle_q_side = false;
+			return true;
+		} 		
 	}
-	else
-		return false;
+	return false;
 }
 
 
