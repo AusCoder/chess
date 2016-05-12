@@ -98,6 +98,9 @@ void check_test() {
         get_input();
         (*board)[to_str(x,3)] = "-";
     }
+    vector<int> start {6,4};
+    vector<int> end {7,4};
+    update_board(start, end, board);
     for(int x = 1; x<=8; x++) {
         (*board)[to_str(x,2)] = "WN";
         ncurses_print_board(board, true);

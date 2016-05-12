@@ -28,18 +28,16 @@ string to_str(int x, int y) {
     ret += rows[y - 1];
     return ret;
 }
-/*
-string to_str(vector<int> cart) {
-    if (cart.size() != 2)
-        cerr << "warning: cartesian coordinates do not have 2 complonents!" << endl;
-    string cols = "abcdefgh";
-    string rows = "12345678";
-    string ret = "";
-    ret += cols[cart[0] - 1];
-    ret += rows[cart[1] - 1];
-    return ret;
+string to_str(vector<int> vec) {
+    assert(vec.size() == 2);
+    return to_str(vec[0], vec[1]);
 }
-*/
+
+void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board) {
+    (*board)[to_str(end)] = (*board)[to_str(start)];
+    (*board)[to_str(start)] = "-";
+}
+
 
 /* get piece at pos */
 string piece_at(const unordered_map<string, string> *board, string pos) {
