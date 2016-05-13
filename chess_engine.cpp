@@ -107,9 +107,12 @@ int main() {
             char piece = (*board)[input.substr(0,2)][1];
             vector<int> start = to_cart(input.substr(0,2));
             vector<int> end = to_cart(input.substr(2,2));
+			for (auto it = end.begin(); it != end.end(); it++)
+				cout << *it;
+			cout << endl;
             struct PlayerStatus &player_ps = white_turn ? white_ps : black_ps;
             
-            if ( false ) {//! is_legal_move(start, end, piece, colour, board) ) {
+            if ( ! is_legal_move(start, end, piece, colour, board) ) {
                 // print error
                 continue;
             }
