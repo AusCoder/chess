@@ -14,8 +14,8 @@ using namespace std;
 
 // put function declarations here
 bool is_legal_move(vector<int> start, vector<int> end,char piece, char colour, unordered_map< string, string > *board);
-bool is_king_safe(vector<int> start, vector<int> end, char colour, unordered_map< string, string > *board, struct PlayerStatus player_ps);
-bool can_castle(string input, unordered_map< vector<int>, string > *board);
+bool is_king_safe(unordered_map< string, string > *board, struct PlayerStatus player_ps);
+bool can_castle(const unordered_map< vector<int>, string > *board, string input);
 /* IO functions */
 void print_board(const unordered_map<string, string> *board);
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
@@ -23,12 +23,10 @@ string get_input();
 void print_error_bad_input(string input);
 
 /* convert position string to cartesian coordinates  and vise versa*/
-<<<<<<< HEAD
-
 string pair_to_str(int x, int y);
 vector<int> to_cart(string pos);
 string to_str(vector<int> vec);
->>>>>>> 7e7031f3e2c9cab10c5182e39a1132bf6ef11ed6
+
 void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board);
 /* get piece at position */
 
