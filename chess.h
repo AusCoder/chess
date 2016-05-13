@@ -16,25 +16,19 @@ using namespace std;
 bool is_legal_move(vector<int> start, vector<int> end,char piece, char colour, unordered_map< string, string > *board);
 bool is_king_safe(vector<int> start, vector<int> end, char colour, unordered_map< string, string > *board, struct PlayerStatus player_ps);
 bool can_castle(string input, unordered_map< vector<int>, string > *board);
-
-
-/* initialise the board */
-void init_board( unordered_map<string, string> *board );
-/* print board to termial */
+/* IO functions */
 void print_board(const unordered_map<string, string> *board);
-/* print board with ncurses */
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
-/* get user input */
 string get_input();
-void print_bool(bool x);
-/* update the game state based on move */
-void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
-        struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
-/* convert position string to cartesian coordinates  and vise versa*/
-string pair_to_str(int x, int y);
-string to_str(vector<int> vec);
-vector<int> to_cart(string pos);
+void print_error_bad_input(string input);
 
+/* convert position string to cartesian coordinates  and vise versa*/
+<<<<<<< HEAD
+
+string pair_to_str(int x, int y);
+vector<int> to_cart(string pos);
+string to_str(vector<int> vec);
+>>>>>>> 7e7031f3e2c9cab10c5182e39a1132bf6ef11ed6
 void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board);
 /* get piece at position */
 
