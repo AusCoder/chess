@@ -2,6 +2,7 @@
 
 
 /* tmp function */
+/*
 bool can_castle(string input, unordered_map< vector<int>, string > *board, struct PlayerStatus &player_ps) {
 	return true;
 }
@@ -9,6 +10,7 @@ bool is_king_safe(const unordered_map< string, string > *board, struct PlayerSta
 {
 	return true;
 }
+*/
 
 
 
@@ -118,7 +120,7 @@ int main() {
 			                       
 
             if (! is_legal_move(start, end, board) ) {
-                // print error
+                print_error_bad_move(input);
                 continue;
             }
 

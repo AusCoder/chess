@@ -1,11 +1,12 @@
 #include "chess.h"
 
-#define X_OFFSET 4
-#define Y_OFFSET 2
+#define X_OFFSET 10 
+#define Y_OFFSET 6
 #define X_CELL_SIZE 4
 #define Y_CELL_SIZE 1
 #define CELL_SPACING 1
-#define Y_TURN_SPACING 2
+#define Y_TURN_SPACING 4
+#define BOTTOM_BOARD (Y_OFFSET + 8*Y_CELL_SIZE + 8*CELL_SPACING)
 #define Y_TURN_POS (Y_OFFSET + 8*Y_CELL_SIZE + 8*CELL_SPACING + Y_TURN_SPACING)
 #define X_TURN_POS 4
 #define Y_INPUT_SPACING 4
@@ -43,8 +44,8 @@ void print_board(const unordered_map<string, string> *board) {
 
 /* print the board using ncurses */
 void ncurses_print_board(const unordered_map<string, string> *board, bool white_turn) {
-    string cols = "abcdefgh";
-    string rows = "12345678";
+    const string cols = "abcdefgh";
+    const string rows = "12345678";
 
     /* start by clearing the previous board */
     clear();
@@ -61,6 +62,16 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool white_
         }
         x = X_OFFSET;
         y += Y_CELL_SIZE + CELL_SPACING;
+    }
+
+    // print the coordinates
+    for (int i = 0; i < (int)cols.size() ; i++) {
+        string col = string(1, cols[i]);
+        mvprintw( BOTTOM_BOARD, X_OFFSET + i*(X_CELL_SIZE + CELL_SPACING), col.c_str() );
+    }
+    for (int i = 0; i < (int)cols.size() ; i++) {
+        string row = string(1, rows[cols.size()- i-1]);
+        mvprintw( Y_OFFSET + i*(Y_CELL_SIZE + CELL_SPACING), X_OFFSET - 4, row.c_str() );
     }
 
     /* print who's turn it is */
@@ -96,10 +107,17 @@ void print_bool(bool x) {
     refresh();
 }
 
-/* print bad input error */
+/* draw bad input error */
 void print_error_bad_input(string input) {
-    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad input:                                   ");
+    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad input:                                 ");
     mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad input: ");
+    printw(input.c_str());
+    refresh();
+}
+/* draw bad move error */
+void print_error_bad_move(string input) {
+    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad move:                                 ");
+    mvprintw(Y_ERROR_POS, X_ERROR_POS, "Error, bad move: ");
     printw(input.c_str());
     refresh();
 }

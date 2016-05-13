@@ -21,6 +21,7 @@ void print_board(const unordered_map<string, string> *board);
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
 string get_input();
 void print_error_bad_input(string input);
+void print_error_bad_move(string input);
 
 /* convert position string to cartesian coordinates  and vise versa*/
 vector<int> to_cart(string pos);

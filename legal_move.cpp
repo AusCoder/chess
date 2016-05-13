@@ -45,19 +45,21 @@ bool is_legal_move(vector<int> start, vector<int> end, const unordered_map< stri
 			if (devY == 0) //no row deviation; moves along row
 				sign = (x2 - x1) > 0? 1: -1;
 				int j;
-				for(j = 1; j < devX; ++j)
+				for(j = 1; j < devX; ++j) {
 					vector<int> intermediate {x1 + sign*j, y1};  //jth intermediate space
 					if (occupied(board, intermediate))
 						return false;
+                }
 				return true;
 					
 			if (devX == 0) //no column deviation; moves along column
 				sign = (y2 - y1) > 0? 1: -1;
 				int i;
-				for(i = 1; i < devY; ++i)
+				for(i = 1; i < devY; ++i) {
 					vector<int> intermediate {x1,y1 + sign*i}; //jth intermediate space
 					if (occupied(board, intermediate))
 						return false;
+                }
 				return true;
 			
 		}
