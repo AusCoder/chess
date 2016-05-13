@@ -23,12 +23,10 @@ string get_input();
 void print_error_bad_input(string input);
 
 /* convert position string to cartesian coordinates  and vise versa*/
-//string pair_to_str(int x, int y);
 vector<int> to_cart(string pos);
 string to_str(vector<int> vec);
 void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board);
 /* get piece at position */
-
 string piece_at(const unordered_map<string, string> *board, vector<int> position);
 bool occupied(const unordered_map<string, string> *board, vector<int> position);
 /* a king in check function */

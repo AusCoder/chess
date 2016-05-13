@@ -22,8 +22,8 @@ void print_board(const unordered_map<string, string> *board) {
     string cols = "abcdefgh";
     string rows = "12345678";
 
-    for (int j = rows.size()-1 ; j >= 0; j--) {
-        for (int i = 0; i < cols.size(); i++) {
+    for (int j = (int)rows.size()-1 ; j >= 0; j--) {
+        for (int i = 0; i < (int)cols.size(); i++) {
             string pos = string(1, cols[i]);
             pos += rows[j];
             auto got = board->find(pos);
@@ -51,8 +51,8 @@ void ncurses_print_board(const unordered_map<string, string> *board, bool white_
     
     /* print the board */
     int x = X_OFFSET, y = Y_OFFSET;
-    for (int j = rows.size()-1 ; j >= 0; j--) {
-        for (int i = 0; i < cols.size(); i++) {
+    for (int j = (int)rows.size()-1 ; j >= 0; j--) {
+        for (int i = 0; i < (int)cols.size(); i++) {
             string pos = string(1, cols[i]);
             pos += rows[j];
             string val = piece_at(board, to_cart(pos));

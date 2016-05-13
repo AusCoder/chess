@@ -15,7 +15,9 @@ bool is_king_safe( const unordered_map<string, string> *board, struct PlayerStat
 
 /*******************************************************/
 
-/* check if user input makes sense */
+/* 
+ * check if user input makes sense 
+ */
 bool is_valid_input(string input) {
     if (input == "0-0" || input == "0-0-0")
         return true;
@@ -34,7 +36,9 @@ bool is_valid_input(string input) {
 }
 
 
-/* initialise the board for the beginning of the game */
+/* 
+ * initialise the board for the beginning of the game 
+ */
 void init_board( unordered_map<string, string> *board ) {
     string wpos = "a1WRb1WNc1WBd1WQe1WKf1WBg1WNh1WRa2WPb2WPc2WPd2WPe2WPf2WPg2WPh2WP";
     string bpos = "a8BRb8BNc8BBd8BQe8BKf8BBg8BNh8BRa7BPb7BPc7BPd7BPe7BPf7BPg7BPh7BP";
@@ -52,8 +56,8 @@ void init_board( unordered_map<string, string> *board ) {
     }
     string cols = "abcdefgh";
     string rows = "3456";
-    for (int i = 0; i < cols.size() ; i++) {
-        for (int j = 0; j < rows.size(); j++) {
+    for (unsigned int i = 0; i < cols.size() ; i++) {
+        for (unsigned int j = 0; j < rows.size(); j++) {
             string pos = string(1, cols[i]);
             pos += rows[j];
             (*board)[pos] = "-";
@@ -109,7 +113,7 @@ int main() {
             vector<int> end = to_cart(input.substr(2,2));
             struct PlayerStatus &player_ps = white_turn ? white_ps : black_ps;
             
-            if ( false ) {//! is_legal_move(start, end, piece, colour, board) ) {
+            if (! is_legal_move(start, end, piece, colour, board) ) {
                 // print error
                 continue;
             }
@@ -161,32 +165,3 @@ int main() {
 	return 0;
 }
 
-
-
- // update the current game state with a move 
-/*
-void update_game_state(string move, bool white_turn, unordered_map<string, string> *board,
-        struct PlayerStatus *white_ps, struct PlayerStatus *black_ps) {
-    if (move.size() != 4) {
-         cerr << "warning: move instruction is not 4 characters long!" << endl;
-     }
-     // if it is whites turn, then white is player and back is opposition etc
-     struct PlayerStatus *player = white_turn ? white_ps : black_ps;
-     struct PlayerStatus *opposition = white_turn ? black_ps : white_ps;
-
-     string start = move.substr(0,2);
-     string end = move.substr(2,2);
-
-
-     //
-     // TODO: check if the move puts in check and check if move prevents further castling
-     //
-
-     // check if the piece moved is a king 
-     if ( piece_at(board, to_cart(start))[1] == 'K' ) {
-         player->k_pos = end;
-     }
-     (*board)[end] = (*board)[start];
-     (*board)[start] = "-";
-}
-*/

@@ -7,11 +7,11 @@ vector<int> to_cart(string pos) {
     string cols = "abcdefgh";
     string rows = "12345678";
     vector<int> ret;
-    for (int i = 0; i < cols.size(); i++) {
+    for (unsigned int i = 0; i < cols.size(); i++) {
         if (pos[0] == cols[i])
             ret.push_back(i+1);
     }
-    for (int i = 0; i < rows.size(); i++) {
+    for (unsigned int i = 0; i < rows.size(); i++) {
         if (pos[1] == rows[i])
             ret.push_back(i+1);
     }
@@ -31,6 +31,7 @@ string pair_to_str(int x, int y) {
 string to_str(vector<int> vec) {
     //assert(vec.size() == 2);
     if (vec.size() != 2) {
+        cout << " wrong size vector " << endl;
         throw "to_str wrong size vector";
     }
     return pair_to_str(vec[0], vec[1]);
