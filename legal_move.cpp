@@ -2,7 +2,7 @@
 #include "chess.h"
 																	//ADD en passant routine
 
-bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, unordered_map< string, string > *board)
+bool is_legal_move(vector<int> start, vector<int> end, const unordered_map< string, string > *board)
 {
 	int x1 = start[0], y1= start[1]; // 'start' coordinates
 	int x2 = end[0], y2 = end[1]; // 'end' coordinates
@@ -15,6 +15,8 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 	if (!(start_in_range && end_in_range)) // position(s) are off the board!
 		return false;
 	
+	char colour = piece_at(board, start)[0];
+	char piece = piece_at(board, start)[1];
 	vector<int> intermediate;
 
 	if (piece_at(board, end)[0] != colour){ //ending point is not already occupied by you
@@ -29,7 +31,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 				if (!occupied(board, end) && !occupied(board,intermediate))
 					return true;
 			}
-			else if (colour == 'B' && y1 == 7 && y2 == 5 && devX == 0){ //if white's first move, double jump allowed
+			else if (colour == 'B' && y1 == 7 && y2 == 5 && devX == 0){ //if black's first move, double jump allowed
 				vector<int> intermediate {x1,6}; //intermediate position
 				if (!occupied(board, end) && !occupied(board,intermediate))
 					return true;
@@ -38,7 +40,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 				return true;
 		}
 		 
-		else if (piece == 'R'){ //ROOK
+		else if (piece == 'R' || piece == 'Q'){ //ROOK/QUEEN
 			int sign;			
 			if (devY == 0) //no row deviation; moves along row
 				sign = (x2 - x1) > 0? 1: -1;
@@ -63,7 +65,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 			if ( (devY == 2 && devX == 1) || (devY == 1 && devX == 2))
 				return true;
 		}
-		else if (piece == 'B'){ //BISHOP
+		else if (piece == 'B' || piece == 'Q'){ //BISHOP/QUEEN
 			if (devX == devY) {//absolute row deviation = absolute column deviation
 				int y_sign = (y2 - y1) > 0? 1: -1;
 				int x_sign = (x2 - x1) > 0? 1: -1;
@@ -77,12 +79,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 				return true;
 			}
 		}			
-		else if (piece == 'Q'){ //QUEEN
-			if (devX == 0 || devY == 0) //behaves like rook, so retest as rook
-				return is_legal_move(start, end,'R', colour, board);
-			else if (devX == devY) //behaves like bishop, so retest as bishop
-				return is_legal_move(start, end,'B', colour, board);
-		}
+		
 		else if (piece == 'K'){ //KING
 			if ( devX <= 1 && devY <= 1) //ensures that 'end' is only one move away from 'start'
 				return true;
@@ -100,7 +97,7 @@ bool is_legal_move(vector<int> start, vector<int> end, char piece, char colour, 
 
 // does the proposed move put player 'colour' in check?
 // **will run after is_legal_move, so proposed move will always be legal**
-bool is_king_safe(unordered_map< string, string > *board, struct PlayerStatus player_ps) 
+bool is_king_safe(const unordered_map< string, string > *board, struct PlayerStatus player_ps) 
 {
 	vector<int> king_pos = to_cart(player_ps.k_pos);
 	char player = (piece_at(board, king_pos)[0] == 'W')?'W':'B';
@@ -109,54 +106,105 @@ bool is_king_safe(unordered_map< string, string > *board, struct PlayerStatus pl
 	int king_x = king_pos[0], king_y = king_pos[1];
 	int i;
 	string piece;
-	
-	
+		
 	
 	//determine if enemy rook (or queen) is in striking distance
-	for(i=0; i < 8; ++i){
-		vector<int> position {i, king_y};
+	
+	for(i=1; i < 8; ++i){ //searching right
+		vector<int> position {king_x + i, king_y};
 		if (!((board -> find(to_str(position))) == (board -> end()))) {
 			piece = piece_at(board, position);
 			if( (piece[0] == opponent) && ( piece[1] == 'R' || piece[1] == 'Q')){ //if piece is an enemy rook or queen
-				if (is_legal_move(position, king_pos, piece[1], piece[0], board)) //if piece can reach king
-					return false;
+				return false;
 			}
+		else
+			i = 8;
 		}
 	}
 	
-	for(i=0; i < 8; ++i){
-		vector<int> position {king_x, i};
+	for(i=1; i < 8; ++i){ //searching left
+		vector<int> position {king_x - i, king_y};
 		if (!((board -> find(to_str(position))) == (board -> end()))) {
-			piece = piece_at(board,position);	
+			piece = piece_at(board, position);
 			if( (piece[0] == opponent) && ( piece[1] == 'R' || piece[1] == 'Q')){ //if piece is an enemy rook or queen
-				if (is_legal_move(position, king_pos, piece[1], piece[0], board)) //if piece can reach king
-					return false;
+				return false;
 			}
+		else
+			i = 8;
 		}
 	}
 	
+	for(i=1; i < 8; ++i){ //searching up
+		vector<int> position {king_x, king_y + i};
+		if (!((board -> find(to_str(position))) == (board -> end()))) {
+			piece = piece_at(board, position);
+			if( (piece[0] == opponent) && ( piece[1] == 'R' || piece[1] == 'Q')){ //if piece is an enemy rook or queen
+				return false;
+			}
+		else
+			i = 8;
+		}
+	}
+	for(i=1; i < 8; ++i){ //searching down
+		vector<int> position {king_x, king_y - i};
+		if (!((board -> find(to_str(position))) == (board -> end()))) {
+			piece = piece_at(board, position);
+			if( (piece[0] == opponent) && ( piece[1] == 'R' || piece[1] == 'Q')){ //if piece is an enemy rook or queen
+				return false;
+			}
+		else
+			i = 8;
+		}
+	}
 	
 	//determine if enemy bishop (or queen) is in striking distance
-	for(i=-4; i < 5; ++i){
+	for(i= 1; i < 8; ++i){ //searching right-up direction
 		vector<int> position {king_x + i, king_y + i};
-		if (!((board -> find(to_str(position))) == (board -> end()) && i!=0)){ //if position is on board (and not where king is)
+		if (!((board -> find(to_str(position))) == (board -> end()))){ 
 			piece = piece_at(board,position);
 			if( (piece[0] == opponent) && ( piece[1] == 'B' || piece[1] == 'Q')){ //if piece is an enemy bishop or queen
-				if (is_legal_move(position, king_pos, piece[1], piece[0], board)) //if piece can reach king
-					return false;
+				return false;
 			}
+		else
+			i = 8;
 		}
 	}
-	for(i=-4; i < 5; ++i){
-		vector<int> position = {king_x + i, king_y - i};
-		if (!((board -> find(to_str(position))) == (board -> end()) &&  i!=0 )) { //if position is on board (and not where the king is)
+	
+	for(i= 1; i < 8; ++i){ //searching right-down direction
+		vector<int> position {king_x + i, king_y - i};
+		if (!((board -> find(to_str(position))) == (board -> end()))){ 
 			piece = piece_at(board,position);
 			if( (piece[0] == opponent) && ( piece[1] == 'B' || piece[1] == 'Q')){ //if piece is an enemy bishop or queen
-				if (is_legal_move(position, king_pos, piece[1], piece[0], board)) //if piece can reach king
-					return false;
+				return false;
 			}
+		else
+			i = 8;
 		}
-	}		
+	}
+	
+	for(i= 1; i < 8; ++i){ //searching left-up direction
+		vector<int> position {king_x - i, king_y + i};
+		if (!((board -> find(to_str(position))) == (board -> end()))){ 
+			piece = piece_at(board,position);
+			if( (piece[0] == opponent) && ( piece[1] == 'B' || piece[1] == 'Q')){ //if piece is an enemy bishop or queen
+				return false;
+			}
+		else
+			i = 8;
+		}
+	}
+	
+	for(i= 1; i < 8; ++i){ //searching left-down direction
+		vector<int> position {king_x - i, king_y - i};
+		if (!((board -> find(to_str(position))) == (board -> end()))){ //if position is on board (and not where king is)
+			piece = piece_at(board,position);
+			if( (piece[0] == opponent) && ( piece[1] == 'B' || piece[1] == 'Q')){ //if piece is an enemy bishop or queen
+				return false;
+			}
+		else
+			i = 8;
+		}
+	}
 	
 	
 	//determine if enemy knight is in striking distance
@@ -204,7 +252,7 @@ bool is_king_safe(unordered_map< string, string > *board, struct PlayerStatus pl
 	return true;
 }
 
-bool can_castle(string input, unordered_map< string, string > *board, struct PlayerStatus player_ps)
+bool can_castle(string input, unordered_map< string, string > *board, struct PlayerStatus &player_ps)
 //if can successfully castle, updates board and returns true; returns false otherwise
 {
 	char player = piece_at(board, to_cart(player_ps.k_pos))[0];
@@ -247,6 +295,13 @@ bool can_castle(string input, unordered_map< string, string > *board, struct Pla
 	return false;
 
 }
+
+
+
+
+
+
+
 
 
 

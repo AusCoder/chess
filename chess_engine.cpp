@@ -1,19 +1,17 @@
 #include "chess.h"
 
 
-/* 
- * temporary functions
- * *****************************************************/
-
-bool can_castle(string input, unordered_map<string, string> *board) {
-    return true;
+/* tmp function */
+bool can_castle(string input, unordered_map< vector<int>, string > *board, struct PlayerStatus &player_ps) {
+	return true;
+}
+bool is_king_safe(const unordered_map< string, string > *board, struct PlayerStatus player_ps)
+{
+	return true;
 }
 
-bool is_king_safe( const unordered_map<string, string> *board, struct PlayerStatus player_ps) {
-    return true;
-}
 
-/*******************************************************/
+
 
 /* 
  * check if user input makes sense 
@@ -92,6 +90,7 @@ int main() {
 	/* loop to get a valid input move */
         while (true) {
             input = get_input();
+            struct PlayerStatus &player_ps = white_turn ? white_ps : black_ps;
 
             if ( input == "q" || input == "quit" || input == "r" || input == "resign")
                 break;
@@ -102,22 +101,23 @@ int main() {
             }
 
             else if (input == "0-0" || input == "0-0-0") { // change to const can_castle
-                if (can_castle(input, board))
+                if (can_castle(input, board, player_ps))
                     break;
                 continue;
             }
 
             char colour = white_turn? 'W' : 'B';
             char piece = (*board)[input.substr(0,2)][1];
+            char piece_colour = (*board)[input.substr(0,2)][0];
+            
+            if (piece_colour != colour)
+				continue; //selected opponent's piece
+            
             vector<int> start = to_cart(input.substr(0,2));
             vector<int> end = to_cart(input.substr(2,2));
-			for (auto it = end.begin(); it != end.end(); it++)
-				cout << *it;
-			cout << endl;
-            struct PlayerStatus &player_ps = white_turn ? white_ps : black_ps;
-            
+			                       
 
-            if (! is_legal_move(start, end, piece, colour, board) ) {
+            if (! is_legal_move(start, end, board) ) {
                 // print error
                 continue;
             }
@@ -128,9 +128,11 @@ int main() {
                 update_board(start, end, board);
                 if ( is_king_safe(board, player_ps) )
                     break;
-                update_board(end, start, board);
-                (*board)[input.substr(2,2)] = removed_piece;
-                continue;
+                else {
+					update_board(end, start, board);
+					(*board)[input.substr(2,2)] = removed_piece;
+					continue;
+				}
             }
             // finally we have a legal move
             else {

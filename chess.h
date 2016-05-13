@@ -13,9 +13,9 @@
 using namespace std;
 
 // put function declarations here
-bool is_legal_move(vector<int> start, vector<int> end,char piece, char colour, unordered_map< string, string > *board);
-bool is_king_safe(unordered_map< string, string > *board, struct PlayerStatus player_ps);
-bool can_castle(string input, const unordered_map< vector<int>, string > *board, struct PlayerStatus player_ps);
+bool is_legal_move(vector<int> start, vector<int> end, const unordered_map< string, string > *board);
+bool is_king_safe(const unordered_map< string, string > *board, struct PlayerStatus player_ps);
+bool can_castle(string input, unordered_map< string, string > *board, struct PlayerStatus &player_ps);
 /* IO functions */
 void print_board(const unordered_map<string, string> *board);
 void ncurses_print_board(const unordered_map<string, string> *board, bool);
