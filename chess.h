@@ -32,7 +32,9 @@ void update_game_state(string move, bool white_turn, unordered_map<string, strin
         struct PlayerStatus *white_ps, struct PlayerStatus *black_ps);
 /* convert position string to cartesian coordinates  and vise versa*/
 string pair_to_str(int x, int y);
+string to_str(vector<int> vec);
 vector<int> to_cart(string pos);
+
 void update_board(vector<int> start, vector<int> end, unordered_map<string, string> *board);
 /* get piece at position */
 
