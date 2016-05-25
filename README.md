@@ -1,3 +1,1 @@
-a chess program
-test
-test2
+This is a simple chess program.
